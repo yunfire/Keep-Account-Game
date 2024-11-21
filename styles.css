@@ -117,6 +117,7 @@ body {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .input-section input,
@@ -435,4 +436,54 @@ body {
 
 .level-up {
     animation: levelUp 0.5s ease;
+}
+
+#recordDate {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--background-color);
+    cursor: pointer;
+}
+
+.input-section input[type="date"] {
+    width: 130px;
+}
+
+/* 添加歷史記錄標題區域樣式 */
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.date-range {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.date-range input[type="date"] {
+    padding: 5px;
+    border: none;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--background-color);
+    cursor: pointer;
+}
+
+.filter-btn {
+    padding: 5px 15px;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.filter-btn:hover {
+    background-color: #357abd;
 } 

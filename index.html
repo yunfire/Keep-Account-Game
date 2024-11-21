@@ -48,6 +48,7 @@
         <!-- 記帳區域 -->
         <div class="accounting-area">
             <div class="input-section">
+                <input type="date" id="recordDate">
                 <input type="number" id="amount" placeholder="輸入金額" min="0">
                 <select id="category">
                     <option value="food">食物</option>
@@ -60,7 +61,15 @@
             </div>
             <!-- 添加記帳歷史區域 -->
             <div class="history-section">
-                <h3>最近記錄</h3>
+                <div class="history-header">
+                    <h3>歷史記錄</h3>
+                    <div class="date-range">
+                        <input type="date" id="startDate">
+                        <span>至</span>
+                        <input type="date" id="endDate">
+                        <button id="filterBtn" class="filter-btn">查詢</button>
+                    </div>
+                </div>
                 <div class="records-list" id="recordsList">
                     <!-- 記錄會在這裡動態添加 -->
                 </div>

@@ -57,13 +57,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 添加記帳記錄
-    function addRecord(amount, category, note) {
+    function addRecord(amount, category, note, date) {
         const record = {
             id: Date.now(),
             amount: amount,
             category: category,
             note: note,
-            date: new Date(),
+            date: date,
             isCritical: Math.random() < accountingData.criticalRate
         };
 
@@ -90,37 +90,39 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 顯示記錄在UI上
-    function displayRecord(record, expGain) {
+    function displayRecord(record, expGain, showExpAnimation = true) {
         const recordsList = document.getElementById('recordsList');
         const recordElement = document.createElement('div');
         recordElement.className = 'record-item new';
         
         recordElement.innerHTML = `
             <div class="record-info">
+                <span class="date">${record.date}</span>
                 <span class="category">${record.category}</span>
                 ${record.note ? `<span class="note"> - ${record.note}</span>` : ''}
                 <span class="amount">-${record.amount}</span>
             </div>
         `;
 
-        // 在經驗條區域顯示經驗值獲得動畫
-        const expBar = document.querySelector('.exp-bar');
-        const expGainElement = document.createElement('div');
-        expGainElement.className = `exp-gain ${record.isCritical ? 'critical' : ''}`;
-        expGainElement.textContent = record.isCritical ? `爆擊! +${expGain} EXP` : `+${expGain} EXP`;
-        expBar.appendChild(expGainElement);
-
         recordsList.insertBefore(recordElement, recordsList.firstChild);
+
+        // 只在新增記錄時顯示經驗值動畫
+        if (showExpAnimation && expGain > 0) {
+            const expBar = document.querySelector('.exp-bar');
+            const expGainElement = document.createElement('div');
+            expGainElement.className = `exp-gain ${record.isCritical ? 'critical' : ''}`;
+            expGainElement.textContent = record.isCritical ? `爆擊! +${expGain} EXP` : `+${expGain} EXP`;
+            expBar.appendChild(expGainElement);
+
+            setTimeout(() => {
+                expGainElement.remove();
+            }, 2000);
+        }
 
         // 移除新記錄的動畫類別
         setTimeout(() => {
             recordElement.classList.remove('new');
         }, 500);
-
-        // 延長動畫元素的移除時間到2秒
-        setTimeout(() => {
-            expGainElement.remove();
-        }, 2000);
     }
 
     // 保存到本地存儲
@@ -155,14 +157,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const amount = parseFloat(document.getElementById('amount').value);
         const category = document.getElementById('category').value;
         const note = document.getElementById('note').value;
+        const date = document.getElementById('recordDate').value;
+
+        if (!date) {
+            alert('請選擇日期！');
+            return;
+        }
 
         if (amount && amount > 0) {
-            addRecord(amount, category, note);
+            addRecord(amount, category, note, date);
             // 清空輸入
             document.getElementById('amount').value = '';
             document.getElementById('note').value = '';
         } else {
-            alert('請入有效金額！');
+            alert('請輸入有效金額！');
         }
     });
 
@@ -330,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fileInput.click();
         });
 
-        // 處���文件選擇
+        // 處理文件選擇
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -370,4 +378,58 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 在初始化時調用
     initAvatarUpload();
+
+    // 設定日期選擇器的預設值為今天
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('recordDate').value = today;
+
+    // 在 DOMContentLoaded 事件中添加
+    function initDateFilter() {
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+        const filterBtn = document.getElementById('filterBtn');
+
+        // 設置初始日期範圍（預設顯示本月）
+        const today = new Date();
+        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        
+        startDate.value = firstDayOfMonth.toISOString().split('T')[0];
+        endDate.value = today.toISOString().split('T')[0];
+
+        // 篩選記錄
+        function filterRecords() {
+            const start = new Date(startDate.value);
+            const end = new Date(endDate.value);
+            end.setHours(23, 59, 59); // 設置結束日期為當天最後一刻
+
+            // 清空現有記錄
+            const recordsList = document.getElementById('recordsList');
+            recordsList.innerHTML = '';
+
+            // 篩選並顯示符合日期範圍的記錄
+            const filteredRecords = accountingData.records.filter(record => {
+                const recordDate = new Date(record.date);
+                return recordDate >= start && recordDate <= end;
+            });
+
+            // 顯示篩選後的記錄
+            filteredRecords.forEach(record => {
+                displayRecord(record, 0, false); // 添加第三個參數來控制是否顯示經驗值動畫
+            });
+
+            // 如果沒有記錄，顯示提示
+            if (filteredRecords.length === 0) {
+                const noRecordMsg = document.createElement('div');
+                noRecordMsg.className = 'no-record-message';
+                noRecordMsg.textContent = '此期間沒有記錄';
+                recordsList.appendChild(noRecordMsg);
+            }
+        }
+
+        // 綁定查詢按鈕事件
+        filterBtn.addEventListener('click', filterRecords);
+    }
+
+    // 在初始化時調用
+    initDateFilter();
 }); 
