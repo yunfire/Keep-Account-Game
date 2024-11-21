@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>記帳冒險家</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- 角色狀態區 -->
+        <div class="character-status">
+            <div class="character-avatar">
+                <input type="file" id="avatarUpload" accept="image/jpeg, image/png" style="display: none;">
+                <img id="avatarImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23666'/%3E%3Ctext x='50' y='50' font-family='Arial' font-size='12' fill='white' text-anchor='middle' alignment-baseline='middle'%3E點擊上傳頭像%3C/text%3E%3C/svg%3E" alt="頭像">
+                <div class="avatar-overlay">點擊上傳</div>
+            </div>
+            <div class="status-bars">
+                <div class="exp-bar">
+                    <div class="exp-fill"></div>
+                    <span>EXP: 450/1000</span>
+                </div>
+                <div class="stats">
+                    <div class="stat" data-tooltip="提升記帳獲得的經驗值&#10">
+                        <span>理財等級: <span id="financeLevel">15</span><span class="temp-point"></span></span>
+                        <button class="add-point-btn" data-stat="finance">+</button>
+                    </div>
+                    <div class="stat" data-tooltip="增加觸發特殊掉落的機率&#10">
+                        <span>省錢技能: <span id="savingLevel">25</span><span class="temp-point"></span></span>
+                        <button class="add-point-btn" data-stat="saving">+</button>
+                    </div>
+                    <div class="stat" data-tooltip="提升掉落物品的品質&#10">
+                        <span>投資眼光: <span id="investLevel">18</span><span class="temp-point"></span></span>
+                        <button class="add-point-btn" data-stat="invest">+</button>
+                    </div>
+                </div>
+                <div class="level-info">
+                    <span>等級: <span id="playerLevel">1</span></span>
+                    <span>可用點數: <span id="availablePoints">0</span></span>
+                </div>
+                <div class="confirm-buttons-container hidden">
+                    <button class="confirm-all">確認加點</button>
+                    <button class="cancel-all">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 記帳區域 -->
+        <div class="accounting-area">
+            <div class="input-section">
+                <input type="number" id="amount" placeholder="輸入金額" min="0">
+                <select id="category">
+                    <option value="food">食物</option>
+                    <option value="transport">交通</option>
+                    <option value="entertainment">娛樂</option>
+                    <option value="other">其他</option>
+                </select>
+                <input type="text" id="note" placeholder="備註">
+                <button class="record-btn" id="recordBtn">記錄支出</button>
+            </div>
+            <!-- 添加記帳歷史區域 -->
+            <div class="history-section">
+                <h3>最近記錄</h3>
+                <div class="records-list" id="recordsList">
+                    <!-- 記錄會在這裡動態添加 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 掉落物展示區 -->
+        <div class="drops-area">
+            <h3>最近獲得的寶物</h3>
+            <div class="drops-grid">
+                <div class="drop-item" data-tooltip="提升30%省錢機率&#10;使用後1小時內記帳時有更高機率觸發特殊獎勵">
+                    <div class="item-icon savings-boost"></div>
+                    <span class="item-name">省錢達人加持</span>
+                    <span class="expire-time" data-expire="2024-03-20T15:30:00">到期時間載入中...</span>
+                </div>
+                <div class="drop-item" data-tooltip="獲得經驗值提升150%&#10;使記帳時獲得更多經驗值">
+                    <div class="item-icon exp-boost"></div>
+                    <span class="item-name">經驗加成</span>
+                    <span class="expire-time" data-expire="2024-03-20T16:00:00">到期時間載入中...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
